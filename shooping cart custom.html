@@ -1,0 +1,783 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+</head>
+
+<body>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=360, initial-scale=1">
+	<title></title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+	<link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+  <h1><a href="otherPage.html">Other Page</a></h1>
+	<main class="main-container">
+
+		<section class="section">
+			<h2 class="text-center">Products</h2>
+			<div class="products">
+				<!--
+					https://www.iconfinder.com/iconsets/beverage
+					Creative Commons (Attribution 3.0 Unported)
+					https://creativemarket.com/eucalyp
+				-->
+				<div class="product">
+					<img class="product__image" src="img/products/beer.svg" alt="Beer">
+					<h2 class="product__name">Beer</h2>
+					<h3 class="product__price">6.00</h3>
+					<button class="btn btn--primary" data-action="ADD_TO_CART">Add To Cart</button>
+				</div>
+				<div class="product">
+					<img class="product__image" src="img/products/energy-drink.svg" alt="Energy Drink">
+					<h2 class="product__name">Energy Drink</h2>
+					<h3 class="product__price">5.00</h3>
+					<button class="btn btn--primary" data-action="ADD_TO_CART">Add To Cart</button>
+				</div>
+				<div class="product">
+					<img class="product__image" src="img/products/juice.svg" alt="Juice">
+					<h2 class="product__name">Juice</h2>
+					<h3 class="product__price">4.00</h3>
+					<button class="btn btn--primary" data-action="ADD_TO_CART">Add To Cart</button>
+				</div>
+				<div class="product">
+					<img class="product__image" src="img/products/milk.svg" alt="Milk">
+					<h2 class="product__name">Milk</h2>
+					<h3 class="product__price">2.50</h3>
+					<button class="btn btn--primary" data-action="ADD_TO_CART">Add To Cart</button>
+				</div>
+				<div class="product">
+					<img class="product__image" src="img/products/mineral-water.svg" alt="Mineral Water">
+					<h2 class="product__name">Mineral Water</h2>
+					<h3 class="product__price">1.00</h3>
+					<button class="btn btn--primary" data-action="ADD_TO_CART">Add To Cart</button>
+				</div>
+				<div class="product">
+					<img class="product__image" src="img/products/smoothie.svg" alt="Smoothie">
+					<h2 class="product__name">Smoothie</h2>
+					<h3 class="product__price">6.00</h3>
+					<button class="btn btn--primary" data-action="ADD_TO_CART">Add To Cart</button>
+				</div>
+			</div>
+		</section>
+
+		<section class="section">
+			<h2 class="text-center">Cart</h2>
+			<div class="cart"></div>
+		</section>
+
+	</main>
+
+	<script src="pageWithProducts.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+css
+
+:root {
+  --color-white: #f4f4f4;
+  --color-gray-light: #d1d1d1;
+  --color-black: #222;  
+  --color-primary: #3184d1;
+  --color-primary-light: #a9d0f5;
+  --color-danger: #e90000;
+  --color-danger-light: #f5b5b5;
+  --min-width: 360px;
+  --max-width: 1200px;
+  --base-font-family: Arial, Helvetica, sans-serif;
+  --fancy-font-family: 'Lobster', serif;
+  --base-padding: 10px;
+  font-size: 12px;
+}
+
+@media screen and (min-width: 600px) {
+  :root {
+    --base-padding: 12px;
+    font-size: 14px; 
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  :root {
+    --base-padding: 20px;
+    font-size: 16px;
+  }
+}
+
+body {
+  margin: 0;
+  min-width: var(--min-width);
+  color: var(--color-black);
+  font-family: var(--base-font-family);
+}
+
+/* ----------------- Layout ----------------- */
+
+.main-container {
+  max-width: var(--max-width);
+  display: grid;
+  grid-gap: var(--base-padding);
+  grid-template-columns: 1fr 3fr;
+  margin: 0 auto;
+  padding: 0 var(--base-padding);
+}
+
+@media screen and (min-width: 600px) {
+  .main-container { grid-template-columns: 5fr 6fr }
+}
+
+@media screen and (min-width: 1000px) {
+  .main-container { grid-template-columns: 5fr 3fr }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+}
+
+/* ----------------- Typography ----------------- */
+
+h1, h2, h3 {
+  font-family: var(--fancy-font-family);
+  font-weight: 400;
+  margin: 1rem auto;
+}
+
+p {
+  margin: 1rem auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* ----------------- Buttons ----------------- */
+
+button {
+  font-family: var(--base-font-family);
+  cursor: pointer;
+  font-size: .95rem;
+  border: none;
+}
+
+:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.btn {
+  padding: .65rem 1rem;
+  transition: .3s all;
+}
+
+.btn--small {
+  padding: .2rem .4rem;
+}
+
+.btn--primary {
+  color: var(--color-white);
+  background: var(--color-primary);
+}
+
+.btn--primary:hover:not(:disabled),
+.btn--primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 5px var(--color-primary-light);
+}
+
+.btn--danger {
+  color: var(--color-white);
+  background: var(--color-danger);
+}
+
+.btn--danger:hover:not(:disabled),
+.btn--danger:focus {
+  outline: none;
+  box-shadow: 0 0 0 5px var(--color-danger-light);
+}
+
+/* ----------------- Products ----------------- */
+
+.products {
+  display: grid;
+  grid-gap: var(--base-padding);
+  overflow: auto;
+}
+
+@media screen and (min-width: 600px) {
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .products {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.product {
+  text-align: center;
+  padding: var(--base-padding);
+  border: 2px dashed var(--color-gray-light);
+}
+
+.product:hover {
+  border-style: solid;
+}
+
+.product__price:before {
+  content: '$';
+}
+
+.product__image {
+  max-width: 65px;
+  transition: .3s all;
+  filter: drop-shadow(0px 0px 0px transparent);
+}
+
+@media screen and (min-width: 600px) {
+  .product__image {
+    max-width: 100px;
+  }
+}
+
+.product:hover .product__image {
+  animation: .5s shake-product-image;
+}
+
+@keyframes shake-product-image {
+  25% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }  
+  75% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* ----------------- Cart ----------------- */
+
+.cart {
+  display: grid;
+  grid-gap: var(--base-padding);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.cart h3 {
+  margin: 0;
+}
+
+.cart__item {
+  display: grid;
+  grid-template-columns: 2rem 7rem 3rem auto 1rem auto auto;
+  justify-content: space-between;
+  align-items: center;  
+  text-align: center;
+  padding: var(--base-padding);
+  border: 2px dashed var(--color-gray-light);
+  animation: .3s add-cart-item;
+}
+
+@keyframes add-cart-item {
+  from {
+    margin-left: -200px;
+    margin-right: 200px;
+    opacity: 0;
+  }
+  to {
+    margin-left: 0;
+    margin-right: 0;
+    opacity: 1;
+  }
+}
+
+.cart__item--removed {
+  animation: .3s remove-cart-item;
+}
+
+@keyframes remove-cart-item {
+  to {
+    margin-left: 200px;
+    margin-right: -200px;
+    opacity: 0;
+  }
+}
+
+.cart__item__image {
+  max-width: 28px;
+}
+
+@media screen and (min-width: 600px) {
+  .cart__item__image {
+    max-width: 38.5px;
+  }
+}
+
+.cart__item__price:before {
+  content: '$';
+}
+
+.cart-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--base-padding);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(255, 255, 255, .7);
+  cursor: wait;
+}
+
+
+
+
+other html
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=360, initial-scale=1">
+	<title></title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+	<link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+  <h1><a href="index.html">Home</a></h1>
+	<main class="main-container">
+
+		<section class="section">
+			<h2 class="text-center">Cart</h2>
+			<div class="cart"></div>
+		</section>
+
+	</main>
+
+	<script src="otherPages.js"></script>
+</body>
+
+</html>
+
+
+
+other js
+
+'use strict';
+
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+const cartDOM = document.querySelector('.cart');
+// const addToCartButtonsDOM = document.querySelectorAll('[data-action="ADD_TO_CART"]');
+
+if (cart.length > 0) {
+  cart.forEach(cartItem => {
+    const product = cartItem;
+    insertItemToDOM(product);
+    countCartTotal();
+
+    // addToCartButtonsDOM.forEach(addToCartButtonDOM => {
+    //   const productDOM = addToCartButtonDOM.parentNode;
+
+    //   if (productDOM.querySelector('.product__name').innerText === product.name) {
+    //     handleActionButtons(addToCartButtonDOM, product);
+    //   }
+    // });
+    handleActionButtons(product);
+  });
+}
+
+// addToCartButtonsDOM.forEach(addToCartButtonDOM => {
+//   addToCartButtonDOM.addEventListener('click', () => {
+//     const productDOM = addToCartButtonDOM.parentNode;
+//     const product = {
+//       image: productDOM.querySelector('.product__image').getAttribute('src'),
+//       name: productDOM.querySelector('.product__name').innerText,
+//       price: productDOM.querySelector('.product__price').innerText,
+//       quantity: 1
+//     };
+
+//     const isInCart = cart.filter(cartItem => cartItem.name === product.name).length > 0;
+
+//     if (!isInCart) {
+//       insertItemToDOM(product);
+//       cart.push(product);
+//       saveCart();
+//       handleActionButtons(addToCartButtonDOM, product);
+//     }
+//   });
+// });
+
+function insertItemToDOM(product) {
+  cartDOM.insertAdjacentHTML(
+    'beforeend',
+    `
+    <div class="cart__item">
+      <img class="cart__item__image" src="${product.image}" alt="${product.name}">
+      <h3 class="cart__item__name">${product.name}</h3>
+      <h3 class="cart__item__price">${product.price}</h3>
+      <button class="btn btn--primary btn--small${product.quantity === 1 ? ' btn--danger' : ''}" data-action="DECREASE_ITEM">&minus;</button>
+      <h3 class="cart__item__quantity">${product.quantity}</h3>
+      <button class="btn btn--primary btn--small" data-action="INCREASE_ITEM">&plus;</button>
+      <button class="btn btn--danger btn--small" data-action="REMOVE_ITEM">&times;</button>
+    </div>
+  `
+  );
+
+  addCartFooter();
+}
+
+// function handleActionButtons(addToCartButtonDOM, product) {
+function handleActionButtons(product) {
+  // addToCartButtonDOM.innerText = 'In Cart';
+  // addToCartButtonDOM.disabled = true;
+
+  const cartItemsDOM = cartDOM.querySelectorAll('.cart__item');
+  cartItemsDOM.forEach(cartItemDOM => {
+    if (cartItemDOM.querySelector('.cart__item__name').innerText === product.name) {
+      cartItemDOM.querySelector('[data-action="INCREASE_ITEM"]').addEventListener('click', () => increaseItem(product, cartItemDOM));
+      // cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').addEventListener('click', () => decreaseItem(product, cartItemDOM, addToCartButtonDOM));
+      // cartItemDOM.querySelector('[data-action="REMOVE_ITEM"]').addEventListener('click', () => removeItem(product, cartItemDOM, addToCartButtonDOM));
+      cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').addEventListener('click', () => decreaseItem(product, cartItemDOM));
+      cartItemDOM.querySelector('[data-action="REMOVE_ITEM"]').addEventListener('click', () => removeItem(product, cartItemDOM));
+    }
+  });
+}
+
+function increaseItem(product, cartItemDOM) {
+  cart.forEach(cartItem => {
+    if (cartItem.name === product.name) {
+      cartItemDOM.querySelector('.cart__item__quantity').innerText = ++cartItem.quantity;
+      cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.remove('btn--danger');
+      saveCart();
+    }
+  });
+}
+
+// function decreaseItem(product, cartItemDOM, addToCartButtonDOM) {
+function decreaseItem(product, cartItemDOM) {
+  cart.forEach(cartItem => {
+    if (cartItem.name === product.name) {
+      if (cartItem.quantity > 1) {
+        cartItemDOM.querySelector('.cart__item__quantity').innerText = --cartItem.quantity;
+        saveCart();
+      } else {
+        // removeItem(product, cartItemDOM, addToCartButtonDOM);
+        removeItem(product, cartItemDOM);
+      }
+
+      if (cartItem.quantity === 1) {
+        cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.add('btn--danger');
+      }
+    }
+  });
+}
+
+// function removeItem(product, cartItemDOM, addToCartButtonDOM) {
+function removeItem(product, cartItemDOM) {
+  cartItemDOM.classList.add('cart__item--removed');
+  setTimeout(() => cartItemDOM.remove(), 250);
+  cart = cart.filter(cartItem => cartItem.name !== product.name);
+  saveCart();
+  // addToCartButtonDOM.innerText = 'Add To Cart';
+  // addToCartButtonDOM.disabled = false;
+
+  if (cart.length < 1) {
+    document.querySelector('.cart-footer').remove();
+  }
+}
+
+function addCartFooter() {
+  if (document.querySelector('.cart-footer') === null) {
+    cartDOM.insertAdjacentHTML(
+      'afterend',
+      `
+      <div class="cart-footer">
+        <button class="btn btn--danger" data-action="CLEAR_CART">Clear Cart</button>
+        <button class="btn btn--primary" data-action="CHECKOUT">Pay</button>
+      </div>
+    `
+    );
+
+    document.querySelector('[data-action="CLEAR_CART"]').addEventListener('click', () => clearCart());
+    document.querySelector('[data-action="CHECKOUT"]').addEventListener('click', () => checkout());
+  }
+}
+
+function clearCart() {
+  cartDOM.querySelectorAll('.cart__item').forEach(cartItemDOM => {
+    cartItemDOM.classList.add('cart__item--removed');
+    setTimeout(() => cartItemDOM.remove(), 250);
+  });
+
+  cart = [];
+  localStorage.removeItem('cart');
+  document.querySelector('.cart-footer').remove();
+
+  // addToCartButtonsDOM.forEach(addToCartButtonDOM => {
+  //   addToCartButtonDOM.innerText = 'Add To Cart';
+  //   addToCartButtonDOM.disabled = false;
+  // });
+}
+
+function checkout() {
+  let paypalFormHTML = `
+    <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+      <input type="hidden" name="cmd" value="_cart">
+      <input type="hidden" name="upload" value="1">
+      <input type="hidden" name="business" value="adrian@webdev.tube">
+  `;
+
+  cart.forEach((cartItem, index) => {
+    ++index;
+    paypalFormHTML += `
+      <input type="hidden" name="item_name_${index}" value="${cartItem.name}">
+      <input type="hidden" name="amount_${index}" value="${cartItem.price}">
+      <input type="hidden" name="quantity_${index}" value="${cartItem.quantity}">
+    `;
+  });
+
+  paypalFormHTML += `
+      <input type="submit" value="PayPal">
+    </form>
+    <div class="overlay"></div>
+  `;
+
+  document.querySelector('body').insertAdjacentHTML('beforeend', paypalFormHTML);
+  document.getElementById('paypal-form').submit();
+}
+
+function countCartTotal() {
+  let cartTotal = 0;
+  cart.forEach(cartItem => (cartTotal += cartItem.quantity * cartItem.price));
+  document.querySelector('[data-action="CHECKOUT"]').innerText = `Pay $${cartTotal}`;
+}
+
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+  countCartTotal();
+}
+
+
+
+
+
+product js
+
+
+'use strict';
+
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+const cartDOM = document.querySelector('.cart');
+const addToCartButtonsDOM = document.querySelectorAll('[data-action="ADD_TO_CART"]');
+
+if (cart.length > 0) {
+  cart.forEach(cartItem => {
+    const product = cartItem;
+    insertItemToDOM(product);
+    countCartTotal();
+
+    addToCartButtonsDOM.forEach(addToCartButtonDOM => {
+      const productDOM = addToCartButtonDOM.parentNode;
+
+      if (productDOM.querySelector('.product__name').innerText === product.name) {
+        handleActionButtons(addToCartButtonDOM, product);
+      }
+    });
+  });
+}
+
+addToCartButtonsDOM.forEach(addToCartButtonDOM => {
+  addToCartButtonDOM.addEventListener('click', () => {
+    const productDOM = addToCartButtonDOM.parentNode;
+    const product = {
+      image: productDOM.querySelector('.product__image').getAttribute('src'),
+      name: productDOM.querySelector('.product__name').innerText,
+      price: productDOM.querySelector('.product__price').innerText,
+      quantity: 1
+    };
+
+    const isInCart = cart.filter(cartItem => cartItem.name === product.name).length > 0;
+
+    if (!isInCart) {
+      insertItemToDOM(product);
+      cart.push(product);
+      saveCart();
+      handleActionButtons(addToCartButtonDOM, product);
+    }
+  });
+});
+
+function insertItemToDOM(product) {
+  cartDOM.insertAdjacentHTML(
+    'beforeend',
+    `
+    <div class="cart__item">
+      <img class="cart__item__image" src="${product.image}" alt="${product.name}">
+      <h3 class="cart__item__name">${product.name}</h3>
+      <h3 class="cart__item__price">${product.price}</h3>
+      <button class="btn btn--primary btn--small${product.quantity === 1 ? ' btn--danger' : ''}" data-action="DECREASE_ITEM">&minus;</button>
+      <h3 class="cart__item__quantity">${product.quantity}</h3>
+      <button class="btn btn--primary btn--small" data-action="INCREASE_ITEM">&plus;</button>
+      <button class="btn btn--danger btn--small" data-action="REMOVE_ITEM">&times;</button>
+    </div>
+  `
+  );
+
+  addCartFooter();
+}
+
+function handleActionButtons(addToCartButtonDOM, product) {
+  addToCartButtonDOM.innerText = 'In Cart';
+  addToCartButtonDOM.disabled = true;
+
+  const cartItemsDOM = cartDOM.querySelectorAll('.cart__item');
+  cartItemsDOM.forEach(cartItemDOM => {
+    if (cartItemDOM.querySelector('.cart__item__name').innerText === product.name) {
+      cartItemDOM.querySelector('[data-action="INCREASE_ITEM"]').addEventListener('click', () => increaseItem(product, cartItemDOM));
+      cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').addEventListener('click', () => decreaseItem(product, cartItemDOM, addToCartButtonDOM));
+      cartItemDOM.querySelector('[data-action="REMOVE_ITEM"]').addEventListener('click', () => removeItem(product, cartItemDOM, addToCartButtonDOM));
+    }
+  });
+}
+
+function increaseItem(product, cartItemDOM) {
+  cart.forEach(cartItem => {
+    if (cartItem.name === product.name) {
+      cartItemDOM.querySelector('.cart__item__quantity').innerText = ++cartItem.quantity;
+      cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.remove('btn--danger');
+      saveCart();
+    }
+  });
+}
+
+function decreaseItem(product, cartItemDOM, addToCartButtonDOM) {
+  cart.forEach(cartItem => {
+    if (cartItem.name === product.name) {
+      if (cartItem.quantity > 1) {
+        cartItemDOM.querySelector('.cart__item__quantity').innerText = --cartItem.quantity;
+        saveCart();
+      } else {
+        removeItem(product, cartItemDOM, addToCartButtonDOM);
+      }
+
+      if (cartItem.quantity === 1) {
+        cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.add('btn--danger');
+      }
+    }
+  });
+}
+
+function removeItem(product, cartItemDOM, addToCartButtonDOM) {
+  cartItemDOM.classList.add('cart__item--removed');
+  setTimeout(() => cartItemDOM.remove(), 250);
+  cart = cart.filter(cartItem => cartItem.name !== product.name);
+  saveCart();
+  addToCartButtonDOM.innerText = 'Add To Cart';
+  addToCartButtonDOM.disabled = false;
+
+  if (cart.length < 1) {
+    document.querySelector('.cart-footer').remove();
+  }
+}
+
+function addCartFooter() {
+  if (document.querySelector('.cart-footer') === null) {
+    cartDOM.insertAdjacentHTML(
+      'afterend',
+      `
+      <div class="cart-footer">
+        <button class="btn btn--danger" data-action="CLEAR_CART">Clear Cart</button>
+        <button class="btn btn--primary" data-action="CHECKOUT">Pay</button>
+      </div>
+    `
+    );
+
+    document.querySelector('[data-action="CLEAR_CART"]').addEventListener('click', () => clearCart());
+    document.querySelector('[data-action="CHECKOUT"]').addEventListener('click', () => checkout());
+  }
+}
+
+function clearCart() {
+  cartDOM.querySelectorAll('.cart__item').forEach(cartItemDOM => {
+    cartItemDOM.classList.add('cart__item--removed');
+    setTimeout(() => cartItemDOM.remove(), 250);
+  });
+
+  cart = [];
+  localStorage.removeItem('cart');
+  document.querySelector('.cart-footer').remove();
+
+  addToCartButtonsDOM.forEach(addToCartButtonDOM => {
+    addToCartButtonDOM.innerText = 'Add To Cart';
+    addToCartButtonDOM.disabled = false;
+  });
+}
+
+function checkout() {
+  let paypalFormHTML = `
+    <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+      <input type="hidden" name="cmd" value="_cart">
+      <input type="hidden" name="upload" value="1">
+      <input type="hidden" name="business" value="adrian@webdev.tube">
+  `;
+
+  cart.forEach((cartItem, index) => {
+    ++index;
+    paypalFormHTML += `
+      <input type="hidden" name="item_name_${index}" value="${cartItem.name}">
+      <input type="hidden" name="amount_${index}" value="${cartItem.price}">
+      <input type="hidden" name="quantity_${index}" value="${cartItem.quantity}">
+    `;
+  });
+
+  paypalFormHTML += `
+      <input type="submit" value="PayPal">
+    </form>
+    <div class="overlay"></div>
+  `;
+
+  document.querySelector('body').insertAdjacentHTML('beforeend', paypalFormHTML);
+  document.getElementById('paypal-form').submit();
+}
+
+function countCartTotal() {
+  let cartTotal = 0;
+  cart.forEach(cartItem => (cartTotal += cartItem.quantity * cartItem.price));
+  document.querySelector('[data-action="CHECKOUT"]').innerText = `Pay $${cartTotal}`;
+}
+
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+  countCartTotal();
+}

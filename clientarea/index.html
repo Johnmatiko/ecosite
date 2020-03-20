@@ -1,0 +1,360 @@
+<?php
+// Initialize the session
+session_start();
+ 
+// Check if the user is already logged in, if yes then redirect him to welcome page
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+  header("location: welcome.php");
+  exit;
+}
+ 
+// Include config file
+require_once "config.php";
+ 
+// Define variables and initialize with empty values
+$username = $password = "";
+$username_err = $password_err = "";
+ 
+// Processing form data when form is submitted
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+ 
+    // Check if username is empty
+    if(empty(trim($_POST["username"]))){
+        $username_err = "Please enter username.";
+    } else{
+        $username = trim($_POST["username"]);
+    }
+    
+    // Check if password is empty
+    if(empty(trim($_POST["password"]))){
+        $password_err = "Please enter your password.";
+    } else{
+        $password = trim($_POST["password"]);
+    }
+    
+    // Validate credentials
+    if(empty($username_err) && empty($password_err)){
+        // Prepare a select statement
+        $sql = "SELECT id, username, password FROM users WHERE username = ?";
+        
+        if($stmt = mysqli_prepare($link, $sql)){
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "s", $param_username);
+            
+            // Set parameters
+            $param_username = $username;
+            
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                // Store result
+                mysqli_stmt_store_result($stmt);
+                
+                // Check if username exists, if yes then verify password
+                if(mysqli_stmt_num_rows($stmt) == 1){                    
+                    // Bind result variables
+                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
+                    if(mysqli_stmt_fetch($stmt)){
+                        if(password_verify($password, $hashed_password)){
+                            // Password is correct, so start a new session
+                            session_start();
+                            
+                            // Store data in session variables
+                            $_SESSION["loggedin"] = true;
+                            $_SESSION["id"] = $id;
+                            $_SESSION["username"] = $username;                            
+                            
+                            // Redirect user to welcome page
+                            header("location: welcome.php");
+                        } else{
+                            // Display an error message if password is not valid
+                            $password_err = "The password you entered was not valid.";
+                        }
+                    }
+                } else{
+                    // Display an error message if username doesn't exist
+                    $username_err = "No account found with that username.";
+                }
+            } else{
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+        }
+        
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+    
+    // Close connection
+    mysqli_close($link);
+}
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sign In or Sign Up</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="assets/css/form-elements.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Favicon and touch icons -->
+        <link rel="shortcut icon" href="assets/ico/favicon.png">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+
+    </head>
+
+    <body>
+
+        <!-- Top content -->
+        <div class="top-content">
+        	
+            <div class="inner-bg">
+                <div class="container">
+                	
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text">
+                            <h1>NISC Client Area</h1>
+                            <div class="description">
+                            	<p>
+	                            	
+                            	</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-5">
+                        	
+                        	<div class="form-box">
+	                        	<div class="form-top">
+	                        		<div class="form-top-left">
+	                        			<h3>Login to our site</h3>
+	                            		<p>Enter username and password to log on:</p>
+	                        		</div>
+	                        		<div class="form-top-right">
+	                        			<i class="fa fa-key"></i>
+	                        		</div>
+	                            </div>
+	                            <div class="form-bottom">
+				                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+				                    	<div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
+				                    		<label class="sr-only" for="form-username">Username</label>
+											<input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
+											<span class="help-block"><?php echo $username_err; ?></span>
+				                        </div>
+				                        <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+				                        	<label class="sr-only" for="form-password">Password</label>
+											<input type="password" name="password" class="form-control">
+											<span class="help-block"><?php echo $password_err; ?></span>
+										</div>
+										<div class="form-group">
+											<input type="submit" class="btn btn-primary" value="Sign In">
+										</div>
+				                    </form>
+			                    </div>
+		                    </div>
+		                
+		                	<div class="social-login">
+	                        	<!--<h3>...or login with:</h3>
+	                        	<div class="social-login-buttons">
+		                        	<a class="btn btn-link-1 btn-link-1-facebook" href="#">
+		                        		<i class="fa fa-facebook"></i> Facebook
+		                        	</a>
+		                        	<a class="btn btn-link-1 btn-link-1-twitter" href="#">
+		                        		<i class="fa fa-twitter"></i> Twitter
+		                        	</a>
+		                        	<a class="btn btn-link-1 btn-link-1-google-plus" href="#">
+		                        		<i class="fa fa-google-plus"></i> Google Plus
+		                        	</a>
+	                        	</div>-->
+	                        </div>
+	                        
+                        </div>
+						<?php
+						// Include config file
+						require_once "config.php";
+						 
+						// Define variables and initialize with empty values
+						$username = $password = $confirm_password = "";
+						$username_err = $password_err = $confirm_password_err = "";
+						 
+						// Processing form data when form is submitted
+						if($_SERVER["REQUEST_METHOD"] == "POST"){
+						 
+							// Validate username
+							if(empty(trim($_POST["username"]))){
+								$username_err = "Please enter a username.";
+							} else{
+								// Prepare a select statement
+								$sql = "SELECT id FROM users WHERE username = ?";
+								
+								if($stmt = mysqli_prepare($link, $sql)){
+									// Bind variables to the prepared statement as parameters
+									mysqli_stmt_bind_param($stmt, "s", $param_username);
+									
+									// Set parameters
+									$param_username = trim($_POST["username"]);
+									
+									// Attempt to execute the prepared statement
+									if(mysqli_stmt_execute($stmt)){
+										/* store result */
+										mysqli_stmt_store_result($stmt);
+										
+										if(mysqli_stmt_num_rows($stmt) == 1){
+											$username_err = "This username is already taken.";
+										} else{
+											$username = trim($_POST["username"]);
+										}
+									} else{
+										echo "Oops! Something went wrong. Please try again later.";
+									}
+								}
+								 
+								// Close statement
+								mysqli_stmt_close($stmt);
+							}
+							
+							// Validate password
+							if(empty(trim($_POST["password"]))){
+								$password_err = "Please enter a password.";     
+							} elseif(strlen(trim($_POST["password"])) < 6){
+								$password_err = "Password must have atleast 6 characters.";
+							} else{
+								$password = trim($_POST["password"]);
+							}
+							
+							// Validate confirm password
+							if(empty(trim($_POST["confirm_password"]))){
+								$confirm_password_err = "Please confirm password.";     
+							} else{
+								$confirm_password = trim($_POST["confirm_password"]);
+								if(empty($password_err) && ($password != $confirm_password)){
+									$confirm_password_err = "Password did not match.";
+								}
+							}
+							
+							// Check input errors before inserting in database
+							if(empty($username_err) && empty($password_err) && empty($confirm_password_err)){
+								
+								// Prepare an insert statement
+								$sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+								 
+								if($stmt = mysqli_prepare($link, $sql)){
+									// Bind variables to the prepared statement as parameters
+									mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+									
+									// Set parameters
+									$param_username = $username;
+									$param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+									
+									// Attempt to execute the prepared statement
+									if(mysqli_stmt_execute($stmt)){
+										// Redirect to login page
+										header("location: login.php");
+									} else{
+										echo "Something went wrong. Please try again later.";
+									}
+								}
+								 
+								// Close statement
+								mysqli_stmt_close($stmt);
+							}
+							
+							// Close connection
+							mysqli_close($link);
+						}
+						?>                        
+                        <div class="col-sm-1 middle-border"></div>
+                        <div class="col-sm-1"></div>
+                        	
+                        <div class="col-sm-5">
+                        	
+                        	<div class="form-box">
+                        		<div class="form-top">
+	                        		<div class="form-top-left">
+	                        			<h3>Sign up now</h3>
+	                            		<p>Fill in the form below to get instant access:</p>
+	                        		</div>
+	                        		<div class="form-top-right">
+	                        			<i class="fa fa-pencil"></i>
+	                        		</div>
+	                            </div>
+	                            <div class="form-bottom">
+									<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+				                    	<div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
+				                    		<label class="sr-only" for="form-first-name">First name</label>
+				                        	<input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
+               								 <span class="help-block"><?php echo $username_err; ?></span>
+				                        </div>
+										<div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+				                        	<label class="sr-only" for="form-last-name">Password</label>
+				                        	<input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
+        							        <span class="help-block"><?php echo $password_err; ?></span>
+				                        </div>
+										<div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
+				                        	<label class="sr-only" for="form-email">Confirm Password</label>
+				                        	<input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
+              								  <span class="help-block"><?php echo $confirm_password_err; ?></span>
+										</div>
+										<input type="submit" class="btn btn-primary" value="Submit">
+                						<input type="reset" class="btn btn-default" value="Reset">
+				                        
+				                        <button type="submit" class="btn" name="signup">Sign Up</button>
+				                    </form>
+			                    </div>
+                        	</div>
+                        	
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Footer -->
+        <footer>
+        	<div class="container">
+        		<div class="row">
+        			
+        			<div class="col-sm-8 col-sm-offset-2">
+        				<div class="footer-border"></div>
+        				<!--<p>Made by Anli Zaimi at <a href="http://azmind.com" target="_blank"><strong>AZMIND</strong></a> 
+        					having a lot of fun. <i class="fa fa-smile-o"></i></p>-->
+        			</div>
+        			
+        		</div>
+        	</div>
+        </footer>
+
+        <!-- Javascript -->
+        <script src="assets/js/jquery-1.11.1.min.js"></script>
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/js/scripts.js"></script>
+        
+        <!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+    </body>
+
+</html>
